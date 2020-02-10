@@ -1,12 +1,11 @@
 <template>
-  <div>User</div>
+  <div class="container">User</div>
 </template>
 
 <script>
-  export default {
-name:'User'
-}
+export default {
+  name: "user-index"
+};
 </script>
 
-<style lang="less" scoped>
-</style>
+<style scoped lang='less'></style>
