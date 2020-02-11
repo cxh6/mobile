@@ -20,8 +20,8 @@
       icon:设置显示的icon图标
     -->
     <van-tabbar route>
-      <van-tabbar-item to="/" icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item to="/question" icon="question-o">问答</van-tabbar-item>
+      <van-tabbar-item to="/home" icon="home-o">首页</van-tabbar-item>
+      <van-tabbar-item to="/question" icon="chat-o">问答</van-tabbar-item>
       <van-tabbar-item to="/video" icon="video-o">视频</van-tabbar-item>
       <van-tabbar-item to="/user" icon="user-o">我的</van-tabbar-item>
     </van-tabbar>
@@ -43,6 +43,7 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    // 92px = 页面高度(46px) * 2
     padding-top: 92px;
     padding-bottom: 100px;
     box-sizing: border-box;
