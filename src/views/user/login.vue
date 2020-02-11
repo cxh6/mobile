@@ -49,7 +49,7 @@
 
 <script>
 // 导入各种api接口
-import { apiUserLogin } from "@/api/user.js"; // 用户登录
+import { apiUserLogin } from "@/api/user.js" // 用户登录
 export default {
   name: "user-chat",
   data() {
@@ -65,15 +65,17 @@ export default {
     async login() {
       // 调用api接口，有可能成功，有可能失败
       try {
-        let res = await apiUserLogin(this.loginForm);
+        let res = await apiUserLogin(this.loginForm)
         // console.log(res); // {token:xxx,refresh_token:xxx}
         // 提示信息
         this.$toast.success("登录成功");
+        // 通过vuex维护服务器端返回的token等秘钥信息
+        this.$store.commit("updateUser", res)
         // 跳转到home页面
         this.$router.push("/");
       } catch (err) {
         // 提示信息
-        this.$toast.fail("手机号或验证码错误" + err);
+        this.$toast.fail("手机号或验证码错误" + err)
       }
     }
   }
