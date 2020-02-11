@@ -63,7 +63,7 @@
         round：圆圈效果
         block：块级样式设置，占据一行
       -->
-      <van-button size="small" type="info" block round @click="login()">登录</van-button>
+      <van-button size="small" type="info" block round @click="login()" :loading="isLogin" loading-text="登录中···">登录</van-button>
     </div>
   </div>
 </template>
@@ -82,6 +82,7 @@ export default {
   },
   data () {
     return {
+      isLogin: false, // 按钮处于正常状态
       loginForm: {
         mobile: '18463848817', // 手机号
         code: '246810' // 验证码
@@ -98,6 +99,8 @@ export default {
         // 校验失败
         return false
       }
+      // 按钮处于等待状态
+      this.isLogin = true
       // 校验成功，继续执行后续代码
       // 调用api接口，有可能成功，有可能失败
       try {
@@ -113,6 +116,8 @@ export default {
         // 提示信息
         this.$toast.fail('手机号或验证码错误' + err)
       }
+      // 按钮处于正常状态
+      this.isLogin = false
     }
   }
 }
