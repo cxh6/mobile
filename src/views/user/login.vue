@@ -12,42 +12,48 @@
     -->
     <van-cell-group>
       <!--
+        ValidationObserver：对整个表单进行登录时的校验
+        ref='xxx':使得组件实例可以【this.$refs.xxx】的方式获得当前的组件对象
+      -->
+      <ValidationObserver ref="loginFormRef">
+        <!--
         ValidationProvider
         name：校验失败，提示当前项目名称的
         rules：设置校验规则，required 必填
         v-slot:接收"作用域插槽"数据，即校验失败错误信息
-      -->
-      <ValidationProvider name="手机号" rules="required|phone" v-slot="{ errors }">
-        <!-- 把校验的错误信息展示出来
-        error-message：显示校验失败的错误信息
         -->
-        <van-field
-          v-model="loginForm.mobile"
-          placeholder="请输入手机号"
-          type="text"
-          label="手机号"
-          required
-          clearable
-          :error-message="errors[0]"
-        ></van-field>
-      </ValidationProvider>
-      <ValidationProvider name="验证码" rules="required" v-slot="{ errors }">
-        <van-field
-          placeholder="请输入验证码"
-          v-model="loginForm.code"
-          type="text"
-          label="验证码"
-          required
-          clearable
-          :error-message="errors[0]"
-        >
-          <!-- 命名插槽应用，提示相关按钮，是要给van-field组件内部的slot去填充的
+        <ValidationProvider name="手机号" rules="required|phone" v-slot="{ errors }">
+          <!-- 把校验的错误信息展示出来
+        error-message：显示校验失败的错误信息
+          -->
+          <van-field
+            v-model="loginForm.mobile"
+            placeholder="请输入手机号"
+            type="text"
+            label="手机号"
+            required
+            clearable
+            :error-message="errors[0]"
+          ></van-field>
+        </ValidationProvider>
+        <ValidationProvider name="验证码" rules="required" v-slot="{ errors }">
+          <van-field
+            placeholder="请输入验证码"
+            v-model="loginForm.code"
+            type="text"
+            label="验证码"
+            required
+            clearable
+            :error-message="errors[0]"
+          >
+            <!-- 命名插槽应用，提示相关按钮，是要给van-field组件内部的slot去填充的
         size="small" 设置按钮大小的
         type="primary" 设置按钮背景颜色
-          -->
-          <van-button slot="button" size="small" type="primary">发送验证码</van-button>
-        </van-field>
-      </ValidationProvider>
+            -->
+            <van-button slot="button" size="small" type="primary">发送验证码</van-button>
+          </van-field>
+        </ValidationProvider>
+      </ValidationObserver>
     </van-cell-group>
     <!-- 登录按钮 -->
     <div class="log-btn">
@@ -66,12 +72,13 @@
 // 导入各种api接口
 import { apiUserLogin } from '@/api/user.js' // 用户登录
 // 验证相关模块导入
-import { ValidationProvider } from 'vee-validate'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 export default {
   name: 'user-chat',
   components: {
     // 注册
-    ValidationProvider
+    ValidationProvider, // 单个校验
+    ValidationObserver // 整体校验
   },
   data () {
     return {
@@ -84,6 +91,14 @@ export default {
   methods: {
     // --------登录操作
     async login () {
+      // validate()返回promise对象
+      const valid = await this.$refs.loginFormRef.validate()
+      // console.log(valid)  true/false
+      if (!valid) {
+        // 校验失败
+        return false
+      }
+      // 校验成功，继续执行后续代码
       // 调用api接口，有可能成功，有可能失败
       try {
         const res = await apiUserLogin(this.loginForm)
