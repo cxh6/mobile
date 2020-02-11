@@ -11,13 +11,13 @@
         clearable：表单域内容可以通过“叉号”清除
     -->
     <van-cell-group>
-      <van-field placeholder="请输入手机号" type="text" label="手机号" required clearable></van-field>
+      <van-field v-model="loginForm.mobile" placeholder="请输入手机号" type="text" label="手机号" required clearable></van-field>
       <van-field placeholder="请输入验证码" type="text" label="验证码" required clearable>
         <!-- 命名插槽应用，提示相关按钮，是要给van-field组件内部的slot去填充的
         size="small" 设置按钮大小的
         type="primary" 设置按钮背景颜色
         -->
-        <van-button slot="button" size="small" type="primary">发送验证码</van-button>
+        <van-button v-model="loginForm.code" slot="button" size="small" type="primary">发送验证码</van-button>
       </van-field>
     </van-cell-group>
     <!-- 登录按钮 -->
@@ -35,7 +35,12 @@
 
 <script>
 export default {
-  name: "user-chat"
+  name: "user-chat",
+  data() {
+    return {
+      loginForm:{}
+    }
+  },
 };
 </script>
 
