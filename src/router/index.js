@@ -10,7 +10,7 @@ const routes = [
     redirect: '/home', // 重定向
     component: () => import('@/views/layout/index.vue'),  // 一级路由 布局组件
     children: [
-      { path: '/home', component: () => import('@/views/home/index.vue') }, // 二级路由 首页组件
+      { path: '/home', name: 'home', component: () => import('@/views/home/index.vue') }, // 二级路由 首页组件
       { path: '/question', component: () => import('@/views/question/index.vue') }, // 二级路由 问答组件
       { path: '/video', component: () => import('@/views/video/index.vue') }, // 二级路由 视频组件
       { path: '/user', component: () => import('@/views/user/index.vue') }, // 二级路由 个人中心组件

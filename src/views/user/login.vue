@@ -11,13 +11,27 @@
         clearable：表单域内容可以通过“叉号”清除
     -->
     <van-cell-group>
-      <van-field v-model="loginForm.mobile" placeholder="请输入手机号" type="text" label="手机号" required clearable></van-field>
-      <van-field placeholder="请输入验证码" type="text" label="验证码" required clearable>
+      <van-field
+        v-model="loginForm.mobile"
+        placeholder="请输入手机号"
+        type="text"
+        label="手机号"
+        required
+        clearable
+      ></van-field>
+      <van-field
+        placeholder="请输入验证码"
+        v-model="loginForm.code"
+        type="text"
+        label="验证码"
+        required
+        clearable
+      >
         <!-- 命名插槽应用，提示相关按钮，是要给van-field组件内部的slot去填充的
         size="small" 设置按钮大小的
         type="primary" 设置按钮背景颜色
         -->
-        <van-button v-model="loginForm.code" slot="button" size="small" type="primary">发送验证码</van-button>
+        <van-button slot="button" size="small" type="primary">发送验证码</van-button>
       </van-field>
     </van-cell-group>
     <!-- 登录按钮 -->
@@ -28,19 +42,41 @@
         round：圆圈效果
         block：块级样式设置，占据一行
       -->
-      <van-button size="small" type="info" block round>登录</van-button>
+      <van-button size="small" type="info" block round @click="login()">登录</van-button>
     </div>
   </div>
 </template>
 
 <script>
+// 导入各种api接口
+import { apiUserLogin } from "@/api/user.js"; // 用户登录
 export default {
   name: "user-chat",
   data() {
     return {
-      loginForm:{}
-    }
+      loginForm: {
+        mobile: "18463848817", // 手机号
+        code: "246810" // 验证码
+      }
+    };
   },
+  methods: {
+    // --------登录操作
+    async login() {
+      // 调用api接口，有可能成功，有可能失败
+      try {
+        let res = await apiUserLogin(this.loginForm);
+        // console.log(res); // {token:xxx,refresh_token:xxx}
+        // 提示信息
+        this.$toast.success("登录成功");
+        // 跳转到home页面
+        this.$router.push("/");
+      } catch (err) {
+        // 提示信息
+        this.$toast.fail("手机号或验证码错误" + err);
+      }
+    }
+  }
 };
 </script>
 
