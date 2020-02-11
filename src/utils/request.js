@@ -2,6 +2,8 @@
 import axios from 'axios'
 // -----导入JSONBig：做大数字处理
 import JSONBig from 'json-bigint'
+// 导入路由，使得可以执行路由跳转
+import router from '@/router/index.js'
 // -----导入vuex：判断用户是否处于登录状态
 // store：就是组件内部的this.$store
 import store from '@/store'
