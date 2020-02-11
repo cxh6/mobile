@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "user-chat"
-};
+  name: 'user-chat'
+}
 </script>
 
 <style scoped lang='less'></style>

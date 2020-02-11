@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  name: "user-index"
-};
+  name: 'user-index'
+}
 </script>
 
 <style scoped lang='less'></style>

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 骨架屏 -->
-    <!-- 
+    <!--
       title:第一行内容
       avatar:小圆圈(头像)
       row:设置行数显示
@@ -14,8 +14,8 @@
 
 <script>
 export default {
-  name: "question-index"
-};
+  name: 'question-index'
+}
 </script>
 
 <style scoped lang='less'>

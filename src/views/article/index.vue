@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "article"
-};
+  name: 'article'
+}
 </script>
 
 <style scoped lang='less'></style>

@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "search-result"
-};
+  name: 'search-result'
+}
 </script>
 
 <style scoped lang='less'></style>

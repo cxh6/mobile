@@ -10,6 +10,8 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 // 导入全局样式
 import '@/assets/css/global.less'
+// 导入规则
+import '@/utils/validate.js'
 // 注册Vant
 Vue.use(Vant)
 Vue.config.productionTip = false

@@ -14,7 +14,7 @@
       <router-view></router-view>
     </div>
     <!-- 标签栏 -->
-    <!-- 
+    <!--
       route:开启路由，也可以设置v-model属性，这里使用的是route路由模式，故不用设置v-model属性
       to:设置路由跳转地址
       icon:设置显示的icon图标
@@ -30,8 +30,8 @@
 
 <script>
 export default {
-  name: "Layout"
-};
+  name: 'Layout'
+}
 </script>
 
 <style lang="less" scoped>

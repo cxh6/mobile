@@ -1,7 +1,7 @@
 module.exports = {
-  lintOnSave: false,
+  lintOnSave: true,
   devServer: {
-    open: true,
-    port: 8080
+    open: true, // 自动开启浏览器s
+    port: 8080 // 服务运行端口
   }
 }

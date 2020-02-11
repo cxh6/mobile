@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <!-- 骨架屏 -->
-    <!-- 
+    <!--
+      内容占位标签，待内容准备好了，骨架屏消失，显示业务内容
       title:第一行内容
       avatar:小圆圈(头像)
       row:设置行数显示
@@ -14,8 +15,8 @@
 
 <script>
 export default {
-  name: "video-index"
-};
+  name: 'video-index'
+}
 </script>
 
 <style scoped lang='less'>

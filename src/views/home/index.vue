@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  name: "home-index"
-};
+  name: 'home-index'
+}
 </script>
 
 <style scoped lang='less'></style>

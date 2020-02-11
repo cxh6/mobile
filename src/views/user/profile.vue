@@ -21,14 +21,14 @@
 
 <script>
 export default {
-  name: "user-profile",
+  name: 'user-profile',
   methods: {
-    save() {
+    save () {
       // 提示信息
-      this.$toast.success("保存成功");
+      this.$toast.success('保存成功')
     }
   }
-};
+}
 </script>
 
 <style scoped lang='less'></style>
