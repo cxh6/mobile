@@ -5,7 +5,8 @@
       <!-- title="xxx"：标签名称 -->
       <van-tab v-for="item in channelList" :key="item.id" :title="item.name">
         <!-- 使用 com-article 组件 -->
-        <com-article></com-article>
+        <!-- :channelID="item.id"：传递选中频道的id，以便获取对应的文章列表 -->
+        <com-article :channelID="item.id"></com-article>
       </van-tab>
     </van-tabs>
   </div>

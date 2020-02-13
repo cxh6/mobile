@@ -18,17 +18,29 @@
             van-cell - 单元格组件，内容独占一行进行显示，使用别的div也可以
                       :title="item":单元格标题
         -->
-        <van-cell v-for="item in list" :key="item" :title="item" />
+        <!-- 模板中使用超大整型的数字，需要自行转变为字符串，调用toString()方法即可 -->
+        <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title" />
       </van-list>
     </van-pull-refresh>
   </div>
 </template>
 
 <script>
+// 导入api接口
+import { apiArticleList } from '@/api/article.js' // 文章列表接口
 export default {
   name: 'com-article',
+  props: {
+    // 接收 频道id
+    channelID: {
+      type: Number,
+      required: true
+    }
+  },
   data () {
     return {
+      ts: Date.now(), // 声明一个时间戳成员，用于获取文章使用
+      articleList: [], // 文章列表
       // 下拉刷新相关成员
       isLoading: false, // 下拉动画是否显示开关
       // --瀑布流相关成员
@@ -37,7 +49,22 @@ export default {
       finished: false // 加载是否停止的标志，false可以继续加载，true瀑布流停止加载，如果后端没有数据可以提供了，就设置该项目为true即可
     }
   },
+  created () {
+    //  文章列表
+    this.getArticleList()
+  },
   methods: {
+    // 文章列表
+    async getArticleList () {
+      const res = await apiArticleList({
+        channel_id: this.channelID,
+        timestamp: this.ts
+      })
+      //   console.log(res)
+      //   this.articleList = res.results
+      // 实现上拉瀑布流效果
+      return res
+    },
     // 下拉刷新
     onRefresh () {
       setTimeout(() => {
@@ -47,22 +74,23 @@ export default {
       }, 1000)
     },
     // 瀑布流加载
-    onLoad () {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-
-        // 加载状态结束
-        this.loading = false // 加载中···动画清除
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true // 瀑布流停止加载
-        }
-      }, 1000)
+    async onLoad () {
+      const result = await this.getArticleList()
+      //   console.log(result)
+      // 判断result.results是否有数据
+      if (result.results) {
+        // 若有数据 追加list中
+      // result.results: [{title:xxx,aut_id:xx,..},{...},{...}]
+      // ... 扩展运算符，{title:xxx,aut_id:xx,..},{...},{...}
+        this.articleList.push(...result.results) // 将刷新获得的数据追加到list列表中
+        // 更新时间戳信息
+        this.ts = result.pre_timestamp
+      } else {
+        // 若没有数据，使瀑布流停止加载即可
+        this.finished = true // 瀑布流停止加载
+      }
+      // 不管是 刷新之后有数据 还是 停止加载瀑布流 都得使 加载中动画停止
+      this.loading = false // “加载中···” 动画清除
     }
   }
 }
