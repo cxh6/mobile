@@ -19,7 +19,43 @@
                       :title="item":单元格标题
         -->
         <!-- 模板中使用超大整型的数字，需要自行转变为字符串，调用toString()方法即可 -->
-        <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title" />
+        <!-- <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title" /> -->
+        <!--
+         cell单元格
+         title：单元格标题
+         <template slot="label">：通过作用域插槽体现单元格的‘label描述信息’  slot="label/title/"
+        -->
+        <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title">
+          <!-- 通过作用域插槽体现单元格的‘label描述信息’ -->
+          <template slot="label">
+            <!-- van-grid 宫格 -->
+            <!--
+              border:设置宫格是否有边框
+              column-num：宫格列数
+            -->
+            <!--
+              数据部分
+              通过cover.type cover.images进行封面图片展示
+              v-if：宫格是否有机会体现 type>0
+              colum-num:type 1列 3列
+             -->
+            <van-grid :border="false" v-if="item.cover.type>0" :column-num="item.cover.type">
+              <!-- van-grid-item：宫格小单元 -->
+              <van-grid-item v-for="(item2,k2) in item.cover.images" :key="k2">
+                <!-- van-image 图片组件 -->
+                <van-image width="90" height="90" :src="item2" />
+              </van-grid-item>
+            </van-grid>
+            <p>
+              <span>作者:{{item.aut_name}}</span>
+              &nbsp;
+              <span>评论 :{{item.comm_count}}</span>
+              &nbsp;
+              <span>时间:{{item.pubdate}}</span>
+              &nbsp;
+            </p>
+          </template>
+        </van-cell>
       </van-list>
     </van-pull-refresh>
   </div>
@@ -83,8 +119,8 @@ export default {
       // 判断result.results是否有数据
       if (result.results) {
         // 若有数据 追加articleList中，并且 更新时间戳信息
-      // result.results: [{title:xxx,aut_id:xx,..},{...},{...}]
-      // ... 扩展运算符，{title:xxx,aut_id:xx,..},{...},{...}
+        // result.results: [{title:xxx,aut_id:xx,..},{...},{...}]
+        // ... 扩展运算符，{title:xxx,aut_id:xx,..},{...},{...}
         this.articleList.push(...result.results) // 将刷新获得的数据追加到list列表中
         // 更新时间戳信息
         this.ts = result.pre_timestamp
