@@ -38,7 +38,7 @@
               通过cover.type cover.images进行封面图片展示
               v-if：宫格是否有机会体现 type>0
               colum-num:type 1列 3列
-             -->
+            -->
             <van-grid :border="false" v-if="item.cover.type>0" :column-num="item.cover.type">
               <!-- van-grid-item：宫格小单元 -->
               <van-grid-item v-for="(item2,k2) in item.cover.images" :key="k2">
@@ -52,7 +52,8 @@
               &nbsp;
               <span>评论 :{{item.comm_count}}</span>
               &nbsp;
-              <span>时间:{{item.pubdate}}</span>
+              <!-- 使用过滤器 -->
+              <span>时间:{{item.pubdate|formatTime}}</span>
               &nbsp;
             </p>
           </template>

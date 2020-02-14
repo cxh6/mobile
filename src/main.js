@@ -12,6 +12,12 @@ import 'vant/lib/index.css'
 import '@/assets/css/global.less'
 // 导入规则
 import '@/utils/validate.js'
+// 全部过滤器
+import * as filters from '@/utils/filters.js'
+// 过滤器
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 // 注册Vant
 Vue.use(Vant)
 // 注册懒加载
