@@ -75,11 +75,14 @@ export default {
     },
     // 瀑布流加载
     async onLoad () {
+      // 应用延迟器
+      // await使得异步变为同步，当前代码没有执行完毕，后续代码等待
+      await this.$sleep(800) // 延迟0.8s
       const result = await this.getArticleList()
       //   console.log(result)
       // 判断result.results是否有数据
       if (result.results) {
-        // 若有数据 追加list中
+        // 若有数据 追加articleList中，并且 更新时间戳信息
       // result.results: [{title:xxx,aut_id:xx,..},{...},{...}]
       // ... 扩展运算符，{title:xxx,aut_id:xx,..},{...},{...}
         this.articleList.push(...result.results) // 将刷新获得的数据追加到list列表中

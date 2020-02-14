@@ -14,19 +14,19 @@ import request from '@/utils/request.js'
  *
  * 经过如下设计，及时没有任何注释说明，我们也知道该接口需要哪些参数，太妙了
  */
-export function apiUserLogin({ mobile, code }) {
-    // 请求axios，request就是axios的复制品，操作结构完全一致
-    // return返回执行结果，是promise对象
-    return request({
-        // url:'差异化url地址'
-        url: '/app/v1_0/authorizations',
-        method: 'POST',
-        data: {
-            // 对象成员简易赋值
-            mobile, // mobile: mobile
-            code
-        }
-        // params:get请求成员标志
-        // data:非get请求成员标志
-    })
+export function apiUserLogin ({ mobile, code }) {
+  // 请求axios，request就是axios的复制品，操作结构完全一致
+  // return返回执行结果，是promise对象
+  return request({
+    // url:'差异化url地址'
+    url: '/app/v1_0/authorizations',
+    method: 'POST',
+    data: {
+      // 对象成员简易赋值
+      mobile, // mobile: mobile
+      code
+    }
+    // params:get请求成员标志
+    // data:非get请求成员标志
+  })
 }
