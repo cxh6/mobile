@@ -43,7 +43,8 @@
               <!-- van-grid-item：宫格小单元 -->
               <van-grid-item v-for="(item2,k2) in item.cover.images" :key="k2">
                 <!-- van-image 图片组件 -->
-                <van-image width="90" height="90" :src="item2" />
+                <!-- lazy-load 图片懒加载 -->
+                <van-image width="90" height="90" :src="item2" lazy-load />
               </van-grid-item>
             </van-grid>
             <p>
