@@ -49,7 +49,7 @@
             </van-grid>
             <p>
               <!-- van-icon 文章右侧小叉号按钮 -->
-              <van-icon name="close" style="float:right;" />
+              <van-icon name="close" style="float:right;" @click="displayDialog()" />
               <span>作者:{{item.aut_name}}</span>
               &nbsp;
               <span>评论 :{{item.comm_count}}</span>
@@ -62,14 +62,22 @@
         </van-cell>
       </van-list>
     </van-pull-refresh>
+    <!-- 使用MoreAction弹出框组件 -->
+    <more-action v-model="showDialog"></more-action>
   </div>
 </template>
 
 <script>
 // 导入api接口
 import { apiArticleList } from '@/api/article.js' // 文章列表接口
+// 导入com-moreaction.vue组件
+import MoreAction from './com-moreaction.vue'
 export default {
   name: 'com-article',
+  // 注册组件
+  components: {
+    MoreAction
+  },
   props: {
     // 接收 频道id
     channelID: {
@@ -79,6 +87,7 @@ export default {
   },
   data () {
     return {
+      showDialog: false, // 控制弹出框组件是否显示  不显示
       ts: Date.now(), // 声明一个时间戳成员，用于获取文章使用
       articleList: [], // 文章列表
       // 下拉刷新相关成员
@@ -89,11 +98,12 @@ export default {
       finished: false // 加载是否停止的标志，false可以继续加载，true瀑布流停止加载，如果后端没有数据可以提供了，就设置该项目为true即可
     }
   },
-  created () {
-    //  文章列表
-    this.getArticleList()
-  },
   methods: {
+    // 通过小叉号控制弹出框是否显示
+    displayDialog () {
+      // 点击之后，显示弹出框
+      this.showDialog = true
+    },
     // 文章列表
     async getArticleList () {
       const res = await apiArticleList({
@@ -110,7 +120,7 @@ export default {
       setTimeout(() => {
         this.onLoad() // 获取数据一次
         this.isLoading = false // 停止拉取
-        this.$toast.success('刷新成功') // 提示信息
+        this.$toast.success('文章加载成功') // 提示信息
       }, 1000)
     },
     // 瀑布流加载
@@ -121,7 +131,7 @@ export default {
       const result = await this.getArticleList()
       //   console.log(result)
       // 判断result.results是否有数据
-      if (result.results) {
+      if (result.results.length > 0) {
         // 若有数据 追加articleList中，并且 更新时间戳信息
         // result.results: [{title:xxx,aut_id:xx,..},{...},{...}]
         // ... 扩展运算符，{title:xxx,aut_id:xx,..},{...},{...}
