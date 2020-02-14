@@ -48,6 +48,8 @@
               </van-grid-item>
             </van-grid>
             <p>
+              <!-- van-icon 文章右侧小叉号按钮 -->
+              <van-icon name="close" style="float:right;" />
               <span>作者:{{item.aut_name}}</span>
               &nbsp;
               <span>评论 :{{item.comm_count}}</span>
