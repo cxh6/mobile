@@ -4,8 +4,15 @@
     <!--
           v-model="isLoading"：设置下拉效果是否结束，false加载完成，动画消失
           @refresh="onRefresh"：鼠标左键下拉触发的事件
+          :success-text="downSuccessText":下拉完毕提示信息
+          :success-duration="1000"：下拉完毕提示信息停留时长
     -->
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+    <van-pull-refresh
+      v-model="isLoading"
+      @refresh="onRefresh"
+      :success-text="downSuccessText"
+      :success-duration="1000"
+    >
       <!-- A: van-list --- 上拉动作（瀑布流效果） -->
       <!--
           v-model="loading"：加载动画效果（加载中···）
@@ -49,7 +56,11 @@
             </van-grid>
             <p>
               <!-- van-icon 文章右侧小叉号按钮，点击按钮 传递不感兴趣文章的id -->
-              <van-icon name="close" style="float:right;" @click="displayDialog(item.art_id.toString())" />
+              <van-icon
+                name="close"
+                style="float:right;"
+                @click="displayDialog(item.art_id.toString())"
+              />
               <span>作者:{{item.aut_name}}</span>
               &nbsp;
               <span>评论 :{{item.comm_count}}</span>
@@ -64,7 +75,11 @@
     </van-pull-refresh>
     <!-- 使用MoreAction弹出框组件 -->
     <!-- :articleID="nowArticleID"：属性值方式传递不感兴趣文章的id -->
-    <more-action v-model="showDialog" :articleID="nowArticleID" @dislikeSuccess="handleDislikeSuccess"></more-action>
+    <more-action
+      v-model="showDialog"
+      :articleID="nowArticleID"
+      @dislikeSuccess="handleDislikeSuccess"
+    ></more-action>
   </div>
 </template>
 
@@ -88,6 +103,8 @@ export default {
   },
   data () {
     return {
+      // 下拉动作完成的文字提示
+      downSuccessText: '', // 文章更新成功 / 文章已经是最新的
       nowArticleID: '', // 不感兴趣文章id
       showDialog: false, // 控制弹出框组件是否显示  不显示
       ts: Date.now(), // 声明一个时间戳成员，用于获取文章使用
@@ -104,7 +121,9 @@ export default {
     // 删除不感兴趣的目标文章
     handleDislikeSuccess () {
       // 获取不感兴趣文章的下标
-      const index = this.articleList.findIndex(item => item.art_id.toString() === this.nowArticleID)
+      const index = this.articleList.findIndex(
+        item => item.art_id.toString() === this.nowArticleID
+      )
       // 根据index删除文章
       this.articleList.splice(index, 1)
     },
@@ -127,12 +146,23 @@ export default {
       return res
     },
     // 下拉刷新
-    onRefresh () {
-      setTimeout(() => {
-        this.onLoad() // 获取数据一次
-        this.isLoading = false // 停止拉取
-        this.$toast.success('文章加载成功') // 提示信息
-      }, 1000)
+    async onRefresh () {
+      await this.$sleep(800) // 延迟器 0.8s
+      // 获得文章列表数据
+      const result = await this.getArticleList()
+      // 判断是否有获得最新的文章
+      if (result.results.length > 0) {
+        // 获得到的数据 unshift数组前置追加元素
+        this.articleList.unshift(...result.results)
+        // 更新时间戳
+        this.ts = result.pre_timestamp // 使得继续请求，可以获得下页数据
+        this.downSuccessText = '文章更新成功'
+      } else {
+        // 没有最新的文章了，页面要给提示
+        this.downSuccessText = '文章已经是最新的'
+      }
+      // 不管是有没有获得最新的文章 下拉动画都得消失
+      this.isLoading = false
     },
     // 瀑布流加载
     async onLoad () {
