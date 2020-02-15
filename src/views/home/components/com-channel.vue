@@ -43,9 +43,9 @@
       </div>
       <!-- 宫格 -->
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="value in 8" :key="value" text="文字">
+        <van-grid-item v-for="item in channelList" :key="item.id">
           <div class="info">
-            <span class="text">文字</span>
+            <span class="text">{{item.name}}</span>
           </div>
         </van-grid-item>
       </van-grid>
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+// 导入api接口
+import { apiChannelAll } from '@/api/channel.js' // 全部频道api
 export default {
   name: 'com-channel',
   props: {
@@ -72,6 +74,22 @@ export default {
     activeChannelIndex: {
       type: Number,
       default: 0 // 默认激活频道是推荐(下标为0)
+    }
+  },
+  data () {
+    return {
+      channelAll: [] // 全部频道列表
+    }
+  },
+  created () {
+    // 全部频道列表
+    this.getChannelAll()
+  },
+  methods: {
+    // 全部频道列表
+    async getChannelAll () {
+      const res = await apiChannelAll()
+      console.log(res)
     }
   }
 }
