@@ -12,11 +12,13 @@
         $emit('input',$event)这样配置，van-dialog组件内部已经把$event.target.value都集成好了
         如果当前的标签是普通的input框标签，那么$emit('input',$event.target.value)这样配置
     -->
+    <!-- @close='isOneLevel=true':弹出框恢复状态 -->
     <van-dialog
       :value="value"
       @input="$emit('input',$event)"
       close-on-click-overlay
       :show-confirm-button="false"
+      @close="isOneLevel=true"
     >
       <!-- 单元格组件 -->
       <van-cell-group v-if="isOneLevel">
@@ -26,7 +28,13 @@
       </van-cell-group>
       <van-cell-group v-else>
         <van-cell icon="arrow-left" @click="isOneLevel=true" />
-        <van-cell v-for="item in reportsList" :key="item.value" :title="item.title" icon="location-o" />
+        <van-cell
+          v-for="item in reportsList"
+          :key="item.value"
+          :title="item.title"
+          @click="articleReport(item.value)"
+          icon="location-o"
+        />
       </van-cell-group>
     </van-dialog>
   </div>
@@ -34,7 +42,7 @@
 
 <script>
 // 导入api
-import { apiArticleDislike } from '@/api/article.js'
+import { apiArticleDislike, apiArticleReport } from '@/api/article.js'
 export default {
   name: 'com-moreaction',
   props: {
@@ -68,6 +76,24 @@ export default {
     }
   },
   methods: {
+    // 文章举报
+    // type 简易成员赋值  type:type
+    async articleReport (type) {
+      try {
+        const res = await apiArticleReport({ articleID: this.articleID, type })
+        console.log(res)
+      } catch (err) {
+        if (err.response.reports === 409) {
+          return this.$toast.fail('该文章已经被举报过了！')
+        } else {
+          return this.$toast.fail('文章举报失败！')
+        }
+      }
+      // 成功提示
+      this.$toast.success('举报成功！')
+      // 弹出框消失
+      this.$emit('input', false)
+    },
     // 文章不感兴趣
     async articleDislike () {
       await apiArticleDislike(this.articleID)
@@ -75,7 +101,7 @@ export default {
       // 弹出框消失
       this.$emit('input', false) // 使得父组件showDialog变为false
       // 提示信息
-      this.$toast.success('对文章处理成功！')
+      this.$toast.success('该文章操作成功！')
       // 删除不感兴趣的文章
       this.$emit('dislikeSuccess')
     }
