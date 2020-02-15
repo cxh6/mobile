@@ -117,6 +117,10 @@ export default {
       finished: false // 加载是否停止的标志，false可以继续加载，true瀑布流停止加载，如果后端没有数据可以提供了，就设置该项目为true即可
     }
   },
+  created () {
+    // 文章列表
+    this.getArticleList()
+  },
   methods: {
     // 删除不感兴趣的目标文章
     handleDislikeSuccess () {

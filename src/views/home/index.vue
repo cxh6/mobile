@@ -17,8 +17,15 @@
         <com-article :channelID="item.id"></com-article>
       </van-tab>
     </van-tabs>
-    <!-- 应用弹出层组件 -->
-    <com-channel v-model="showChannel" :channelList='channelList'></com-channel>
+    <!-- 应用弹出层组件
+    :channelList="channelList"  属性值方式传递频道列表
+    :activeChannelIndex="activeChannelIndex" 属性值方式传当前选中的频道下标
+    -->
+    <com-channel
+      v-model="showChannel"
+      :channelList="channelList"
+      :activeChannelIndex="activeChannelIndex"
+    ></com-channel>
   </div>
 </template>
 

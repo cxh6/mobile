@@ -26,9 +26,10 @@
             宫格内容：
             1.text属性设置简单内容
             2.匿名插槽设置复杂内容
+            :style="{color:k===acticeChannelIndex?'red':'' 设置高亮
         -->
-        <van-grid-item v-for="item in channelList" :key="item.id">
-          <span class="text">{{item.name}}</span>
+        <van-grid-item v-for="(item,k) in channelList" :key="item.id">
+          <span class="text" :style="{color:k===activeChannelIndex?'red':''}">{{item.name}}</span>
         </van-grid-item>
       </van-grid>
     </div>
@@ -66,6 +67,11 @@ export default {
       type: Array,
       // 数组的默认值要通过如下【箭头函数】方式设置
       default: () => []
+    },
+    // 接收父组件传递过来的当前选中频道的下标
+    activeChannelIndex: {
+      type: Number,
+      default: 0 // 默认激活频道是推荐(下标为0)
     }
   }
 }
