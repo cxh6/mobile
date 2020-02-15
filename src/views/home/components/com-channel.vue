@@ -43,7 +43,7 @@
       </div>
       <!-- 宫格 -->
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="item in channelList" :key="item.id">
+        <van-grid-item v-for="item in restChannel" :key="item.id">
           <div class="info">
             <span class="text">{{item.name}}</span>
           </div>
@@ -58,6 +58,27 @@
 import { apiChannelAll } from '@/api/channel.js' // 全部频道api
 export default {
   name: 'com-channel',
+  computed: {
+    // 剩余频道
+    // 从 全部频道 中过滤掉 我的频道
+    restChannel () {
+      // 把‘我的频道’的全部id活的到，以数组的格式返回
+      // map方法对 channelList 做遍历，返回一个新数组
+      // 元素就是channelList数组各个元素的id值，数组长度 与 channelList 一致
+      // [10,20,5,21,...]
+      const userChannelIds = this.channelList.map(item => {
+        return item.id
+      })
+      // 遍历全部频道，返回不在‘我的频道’出现的频道
+      // filter：对channelAll 做过滤，把id值不在userChannelIds数组中出现的元素通过新数组给返回出来
+      // [{id:2,name:xxx}...]
+      const rest = this.channelAll.filter(item => {
+        // Array.includes判断是否包含该元素
+        return !userChannelIds.includes(item.id)
+      })
+      return rest
+    }
+  },
   props: {
     // 接收父组件v-model的数据信息
     value: {
@@ -89,7 +110,8 @@ export default {
     // 全部频道列表
     async getChannelAll () {
       const res = await apiChannelAll()
-      console.log(res)
+      // console.log(res)
+      this.channelAll = res.channels
     }
   }
 }
