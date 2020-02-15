@@ -18,7 +18,7 @@
       </van-tab>
     </van-tabs>
     <!-- 应用弹出层组件 -->
-    <com-channel v-model="showChannel"></com-channel>
+    <com-channel v-model="showChannel" :channelList='channelList'></com-channel>
   </div>
 </template>
 

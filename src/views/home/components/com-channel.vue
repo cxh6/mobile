@@ -21,8 +21,14 @@
       </div>
       <!-- 宫格 -->
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="value in 8" :key="value" text="文字">
-          <span class="text">文字</span>
+        <!--
+            van-grid-item宫格单元
+            宫格内容：
+            1.text属性设置简单内容
+            2.匿名插槽设置复杂内容
+        -->
+        <van-grid-item v-for="item in channelList" :key="item.id">
+          <span class="text">{{item.name}}</span>
         </van-grid-item>
       </van-grid>
     </div>
@@ -50,9 +56,16 @@
 export default {
   name: 'com-channel',
   props: {
+    // 接收父组件v-model的数据信息
     value: {
       type: Boolean,
       default: false
+    },
+    // 接收父组件传递过来的频道列表
+    channelList: {
+      type: Array,
+      // 数组的默认值要通过如下【箭头函数】方式设置
+      default: () => []
     }
   }
 }
