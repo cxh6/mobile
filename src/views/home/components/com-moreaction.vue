@@ -66,8 +66,14 @@ export default {
   methods: {
     // 文章不感兴趣
     async articleDislike () {
-      const res = await apiArticleDislike(this.articleID)
-      console.log(res)
+      await apiArticleDislike(this.articleID)
+      // console.log(res)
+      // 弹出框消失
+      this.$emit('input', false) // 使得父组件showDialog变为false
+      // 提示信息
+      this.$toast.success('对文章处理成功！')
+      // 删除不感兴趣的文章
+      this.$emit('dislikeSuccess')
     }
   }
 }

@@ -64,7 +64,7 @@
     </van-pull-refresh>
     <!-- 使用MoreAction弹出框组件 -->
     <!-- :articleID="nowArticleID"：属性值方式传递不感兴趣文章的id -->
-    <more-action v-model="showDialog" :articleID="nowArticleID"></more-action>
+    <more-action v-model="showDialog" :articleID="nowArticleID" @dislikeSuccess="handleDislikeSuccess"></more-action>
   </div>
 </template>
 
@@ -101,6 +101,13 @@ export default {
     }
   },
   methods: {
+    // 删除不感兴趣的目标文章
+    handleDislikeSuccess () {
+      // 获取不感兴趣文章的下标
+      const index = this.articleList.findIndex(item => item.art_id.toString() === this.nowArticleID)
+      // 根据index删除文章
+      this.articleList.splice(index, 1)
+    },
     // 通过小叉号控制弹出框是否显示
     displayDialog (artID) {
       // 点击之后，显示弹出框
