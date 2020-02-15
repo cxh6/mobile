@@ -3,9 +3,11 @@
     <!-- 标签页 -->
     <van-tabs v-model="activeChannelIndex">
       <!-- 三杠 按钮 -->
-      <!-- 命名插槽 -->
-      <!-- slot="nav-right":图标放置的位置 -->
-      <div slot="nav-right" class="channel-more">
+      <!--
+        命名插槽
+        slot="nav-right":图标放置的位置
+      -->
+      <div slot="nav-right" class="channel-more" @click="showChannel=true">
         <van-icon name="wap-nav" />
       </div>
       <!-- title="xxx"：标签名称 -->
@@ -15,10 +17,14 @@
         <com-article :channelID="item.id"></com-article>
       </van-tab>
     </van-tabs>
+    <!-- 应用弹出层组件 -->
+    <com-channel v-model="showChannel"></com-channel>
   </div>
 </template>
 
 <script>
+// 导入com-channel组件
+import ComChannel from './components/com-channel.vue'
 // 导入com-article组件
 import ComArticle from './components/com-article.vue'
 // 导入频道api
@@ -26,11 +32,13 @@ import { apiChannelList } from '@/api/channel.js'
 export default {
   name: 'home-index',
   components: {
-    // 注册 com-article
-    ComArticle
+    // 注册相关组件
+    ComArticle,
+    ComChannel
   },
   data () {
     return {
+      showChannel: false, // 设置弹出层为不显示
       channelList: [], // 频道列表
       activeChannelIndex: 0 // 通过下标设置激活频道项目，下标从0开始
     }
@@ -51,15 +59,15 @@ export default {
 
 <style scoped lang='less'>
 /*给 更多 频道设置样式*/
-.channel-more{
-  position:fixed;
-  right:0;
+.channel-more {
+  position: fixed;
+  right: 0;
   background-color: white;
-  line-height:88px;
-  height:88px;
+  line-height: 88px;
+  height: 88px;
   width: 90px;
-  text-align:center;
-  font-size:40px;
+  text-align: center;
+  font-size: 40px;
 }
 /*频道列表*/
 .van-tabs {
