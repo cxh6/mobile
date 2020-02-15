@@ -2,6 +2,12 @@
   <div class="container">
     <!-- 标签页 -->
     <van-tabs v-model="activeChannelIndex">
+      <!-- 三杠 按钮 -->
+      <!-- 命名插槽 -->
+      <!-- slot="nav-right":图标放置的位置 -->
+      <div slot="nav-right" class="channel-more">
+        <van-icon name="wap-nav" />
+      </div>
       <!-- title="xxx"：标签名称 -->
       <van-tab v-for="item in channelList" :key="item.id" :title="item.name">
         <!-- 使用 com-article 组件 -->
@@ -44,6 +50,23 @@ export default {
 </script>
 
 <style scoped lang='less'>
+/*给 更多 频道设置样式*/
+.channel-more{
+  position:fixed;
+  right:0;
+  background-color: white;
+  line-height:88px;
+  height:88px;
+  width: 90px;
+  text-align:center;
+  font-size:40px;
+}
+/*频道列表*/
+.van-tabs {
+  /deep/ .van-tabs__wrap {
+    width: 90%; /*设置频道列表最大宽度，可以避免最后一个频道被按钮覆盖住*/
+  }
+}
 .van-tabs {
   // 弹性布局
   display: flex;
