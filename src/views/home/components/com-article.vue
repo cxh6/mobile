@@ -48,8 +48,8 @@
               </van-grid-item>
             </van-grid>
             <p>
-              <!-- van-icon 文章右侧小叉号按钮 -->
-              <van-icon name="close" style="float:right;" @click="displayDialog()" />
+              <!-- van-icon 文章右侧小叉号按钮，点击按钮 传递不感兴趣文章的id -->
+              <van-icon name="close" style="float:right;" @click="displayDialog(item.art_id.toString())" />
               <span>作者:{{item.aut_name}}</span>
               &nbsp;
               <span>评论 :{{item.comm_count}}</span>
@@ -63,7 +63,8 @@
       </van-list>
     </van-pull-refresh>
     <!-- 使用MoreAction弹出框组件 -->
-    <more-action v-model="showDialog"></more-action>
+    <!-- :articleID="nowArticleID"：属性值方式传递不感兴趣文章的id -->
+    <more-action v-model="showDialog" :articleID="nowArticleID"></more-action>
   </div>
 </template>
 
@@ -87,6 +88,7 @@ export default {
   },
   data () {
     return {
+      nowArticleID: '', // 不感兴趣文章id
       showDialog: false, // 控制弹出框组件是否显示  不显示
       ts: Date.now(), // 声明一个时间戳成员，用于获取文章使用
       articleList: [], // 文章列表
@@ -100,9 +102,11 @@ export default {
   },
   methods: {
     // 通过小叉号控制弹出框是否显示
-    displayDialog () {
+    displayDialog (artID) {
       // 点击之后，显示弹出框
       this.showDialog = true
+      // 将不感兴趣文章id给到data中间成员nowArticleID
+      this.nowArticleID = artID
     },
     // 文章列表
     async getArticleList () {

@@ -20,7 +20,7 @@
     >
       <!-- 单元格组件 -->
       <van-cell-group v-if="isOneLevel">
-        <van-cell icon="location-o" title="不感兴趣" />
+        <van-cell icon="location-o" title="不感兴趣" @click="articleDislike()" />
         <van-cell icon="location-o" title="反馈垃圾内容" is-link @click="isOneLevel=false" />
         <van-cell icon="location-o" title="拉黑作者" />
       </van-cell-group>
@@ -41,9 +41,16 @@
 </template>
 
 <script>
+// 导入api
+import { apiArticleDislike } from '@/api/article.js'
 export default {
   name: 'com-moreaction',
   props: {
+    // 接收不感兴趣文章id
+    articleID: {
+      type: String,
+      required: true // 必须传递
+    },
     // 接收父组件传递过来的信息
     value: {
       type: Boolean,
@@ -54,6 +61,13 @@ export default {
     return {
       isOneLevel: true // 判断展示一级 或 二级 反垃圾内容 true:一级  false:二级
       // show: true
+    }
+  },
+  methods: {
+    // 文章不感兴趣
+    async articleDislike () {
+      const res = await apiArticleDislike(this.articleID)
+      console.log(res)
     }
   }
 }
