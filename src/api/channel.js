@@ -6,6 +6,24 @@ import store from '@/store' // 以便知道用户是否登录系统
 const CHANNEL_KEY_TRAVEL = 'hm-channel-travel' // 游客key
 const CHANNEL_KEY_VIP = 'hm-channel-vip' // 登录用户key
 // 创建各个api方法
+// 删除频道
+export function apiChannelDel (id) {
+  return new Promise(function (resolve) {
+    // 判断用户是否登录，并执行不同的key
+    const key = store.state.user.token ? CHANNEL_KEY_VIP : CHANNEL_KEY_TRAVEL
+    // 获得 本地频道数据
+    const localChannels = localStorage.getItem(key)
+    // 不管有没有数据，至少有一个‘推荐’频道项目
+    // 缓存有数据
+    let channels = JSON.parse(localChannels)
+    // 通过id，把被删除的频道中全部的数据里边排除出去
+    channels = channels.filter(item => item.id !== id)
+    // 重新写入缓存
+    localStorage.setItem(key, JSON.stringify(channels))
+    resolve() // 成功执行
+  })
+}
+
 // 添加频道
 export function apiChannelAdd (channel) {
   return new Promise((resolve) => {

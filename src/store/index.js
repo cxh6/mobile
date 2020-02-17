@@ -11,14 +11,14 @@ export default new Vuex.Store({
   },
   mutations: {
     // 修改/更新用户信息
-    updateUser(state, data) {
+    updateUser (state, data) {
       // vuex更新
       state.user = data
       // localStorage更新
-      localStorage.setItem(USER_KEY,JSON.stringify(data))
+      localStorage.setItem(USER_KEY, JSON.stringify(data))
     },
     // 清除用户信息
-    clearUser(state) {
+    clearUser (state) {
       // vuex清除
       state.user = {}
       // localStorage持久清除

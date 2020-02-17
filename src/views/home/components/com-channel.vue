@@ -39,7 +39,7 @@
           <!-- 叉号按钮
                v-show 频繁切换更合适
           -->
-          <van-icon v-show="k>0 && isEdit" name="close" class="close-icon" />
+          <van-icon v-show="k>0 && isEdit" name="close" class="close-icon" @click="userToRest(item.id,k)" />
         </van-grid-item>
       </van-grid>
     </div>
@@ -66,7 +66,7 @@
 
 <script>
 // 导入api接口
-import { apiChannelAll, apiChannelAdd } from '@/api/channel.js' // 全部频道 和 添加频道 api
+import { apiChannelAll, apiChannelAdd, apiChannelDel } from '@/api/channel.js' // 全部频道 添加频道 删除频道 api
 export default {
   name: 'com-channel',
   computed: {
@@ -119,6 +119,22 @@ export default {
     this.getChannelAll()
   },
   methods: {
+    // 删除频道（我的频道---> 推荐频道）
+    // channelID:删除频道id，localStorage
+    // index:删除频道在channelList中的下标
+    userToRest (channelID, index) {
+      // 页面删除
+      this.channelList.splice(index, 1)
+      // 本地缓存中持久删除
+      apiChannelDel(channelID)
+      // 如果被删除的频道是最后一个，那么请设置之前一个频道被激活使用
+      // 算法： activeChannelIndex -= 1
+      // activeChannelIndex 是父组件给传递过来的，即子组件要修改父组件传递过来的数据信息
+      // 判断是删除最后一个项目，算法：项目删除后的长度 ====  删除下标
+      if (this.channelList.length === index) {
+        this.$emit('update:activeChannelIndex', index - 1)
+      }
+    },
     // 添加频道操作
     // channel 被添加频道的数据 {id:xxx,name:xxx}
     restToUser (channel) {
