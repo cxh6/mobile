@@ -6,6 +6,22 @@ import store from '@/store' // 以便知道用户是否登录系统
 const CHANNEL_KEY_TRAVEL = 'hm-channel-travel' // 游客key
 const CHANNEL_KEY_VIP = 'hm-channel-vip' // 登录用户key
 // 创建各个api方法
+// 添加频道
+export function apiChannelAdd (channel) {
+  return new Promise((resolve) => {
+    // 判断用户是否登录，并执行不同的key
+    const key = store.state.user.token ? CHANNEL_KEY_VIP : CHANNEL_KEY_TRAVEL
+    // 获得 本地频道数据
+    const localChannels = localStorage.getItem(key)
+    // 不管有没有数据，至少有一个‘推荐’频道项目
+    const channels = JSON.parse(localChannels) // 字符串 转 对象
+    // 将要添加的频道 追加到 我的频道 中去
+    channels.push(channel)
+    // 追加完之后，重新写入缓存
+    localStorage.setItem(key, JSON.stringify(channels))
+    resolve() // 执行成功，没有任何返回信息
+  })
+}
 
 // 频道列表
 export function apiChannelList () {
