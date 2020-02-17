@@ -8,6 +8,7 @@
     close-icon-position="top-left"
     position="bottom"
     :style="{ height: '95%' }"
+    @close="isEdit=false"
   >
     <div class="channel">
       <div class="channel-head">
@@ -34,12 +35,17 @@
             2.匿名插槽设置复杂内容
             :style="{color:k===acticeChannelIndex?'red':'' 设置高亮
         -->
-        <van-grid-item v-for="(item,k) in channelList" :key="item.id">
+        <van-grid-item v-for="(item,k) in channelList" :key="item.id" @click="clkChannel(item.id,k)">
           <span class="text" :style="{color:k===activeChannelIndex?'red':''}">{{item.name}}</span>
           <!-- 叉号按钮
                v-show 频繁切换更合适
           -->
-          <van-icon v-show="k>0 && isEdit" name="close" class="close-icon" @click="userToRest(item.id,k)" />
+          <van-icon
+            v-show="k>0 && isEdit"
+            name="close"
+            class="close-icon"
+            @click="userToRest(item.id,k)"
+          />
         </van-grid-item>
       </van-grid>
     </div>
@@ -119,6 +125,18 @@ export default {
     this.getChannelAll()
   },
   methods: {
+    // 激活频道
+    clkChannel (channelID, index) {
+      // 判断是否进入编辑状态，编辑状态，执行删除逻辑
+      if (this.isEdit && index > 0) {
+        this.userToRest(channelID, index)
+        return false // 后续代码停止执行
+      }
+      // 弹出层消失
+      this.$emit('input', false)
+      // 激活频道
+      this.$emit('update:activeChannelIndex', index)
+    },
     // 删除频道（我的频道---> 推荐频道）
     // channelID:删除频道id，localStorage
     // index:删除频道在channelList中的下标
