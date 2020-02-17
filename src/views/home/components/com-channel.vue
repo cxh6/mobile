@@ -16,7 +16,13 @@
           <span class="desc">点击进入频道</span>
         </div>
         <div>
-          <van-button type="danger" plain size="mini" round>编辑</van-button>
+          <van-button
+            type="danger"
+            plain
+            size="mini"
+            round
+            @click="isEdit=!isEdit"
+          >{{isEdit?'完成':'编辑'}}</van-button>
         </div>
       </div>
       <!-- 宫格 -->
@@ -30,8 +36,10 @@
         -->
         <van-grid-item v-for="(item,k) in channelList" :key="item.id">
           <span class="text" :style="{color:k===activeChannelIndex?'red':''}">{{item.name}}</span>
-          <!-- 叉号按钮 -->
-          <van-icon v-if="k>0" name="close" class="close-icon" />
+          <!-- 叉号按钮
+               v-show 频繁切换更合适
+          -->
+          <van-icon v-show="k>0 && isEdit" name="close" class="close-icon" />
         </van-grid-item>
       </van-grid>
     </div>
@@ -46,7 +54,7 @@
       <!-- 宫格 -->
       <van-grid class="channel-content" :gutter="10" clickable>
         <!-- 添加频道绑定click事件，传递数据 -->
-        <van-grid-item v-for="item in restChannel" :key="item.id"  @click="restToUser(item)">
+        <van-grid-item v-for="item in restChannel" :key="item.id" @click="restToUser(item)">
           <div class="info">
             <span class="text">{{item.name}}</span>
           </div>
@@ -102,6 +110,7 @@ export default {
   },
   data () {
     return {
+      isEdit: false, // 是否进入编辑状态
       channelAll: [] // 全部频道列表
     }
   },
