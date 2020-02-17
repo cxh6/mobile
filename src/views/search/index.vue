@@ -21,15 +21,22 @@ export default {
   },
   watch: {
     // 对 搜索关键词进行监听
-    async searchText (newV, oldV) {
+    searchText (newV, oldV) {
       // 判断搜索框是否有变化
       if (!newV) {
-        this.sugguestionList = [] // 没有关键字内容
+        this.suggestionList = [] // 没有关键字内容
         return false
       }
-      const res = await apiSuggestionList({ q: newV })
-      // console.log(res)
-      this.suggestionList = res.options
+      // 防抖操作:setTimeout + clearTime
+      // 设置防抖，防止频繁发送请求
+      // timer是组件data成员，就是临时的，不用在data中事先声明
+      // 清除
+      clearTimeout(this.timer)
+      this.timer = setTimeout(async () => {
+        const res = await apiSuggestionList({ q: newV })
+        // console.log(res)
+        this.suggestionList = res.options
+      }, 1000)
     }
   }
 }
