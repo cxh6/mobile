@@ -30,6 +30,8 @@
         -->
         <van-grid-item v-for="(item,k) in channelList" :key="item.id">
           <span class="text" :style="{color:k===activeChannelIndex?'red':''}">{{item.name}}</span>
+          <!-- 叉号按钮 -->
+          <van-icon v-if="k>0" name="close" class="close-icon" />
         </van-grid-item>
       </van-grid>
     </div>
