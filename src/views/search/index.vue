@@ -3,7 +3,11 @@
     <van-nav-bar title="搜索中心" left-arrow @click-left="$router.back()" />
     <van-search v-model.trim="searchText" placeholder="请输入搜索关键词" />
     <van-cell-group>
-      <van-cell v-for="(item,k) in suggestionList" :key="k" :title="item" icon="search" />
+      <!-- <van-cell v-for="(item,k) in suggestionList" :key="k" :title="item" icon="search" /> -->
+      <van-cell v-for="(item,k) in suggestionList" :key="k" icon="search" >
+        <!-- slot="title"使用命名插槽 覆盖 title内容 -->
+        <span slot="title" v-html="highlightCell(item,searchText)"></span>
+      </van-cell>
     </van-cell-group>
   </div>
 </template>
@@ -17,6 +21,18 @@ export default {
     return {
       suggestionList: [], // 联想到的数据
       searchText: '' // 搜索关键词
+    }
+  },
+  methods: {
+    // 关键词高亮设置
+    highlightCell (item, keywords) {
+      // 正则
+      const reg = new RegExp(`${keywords}`, 'i') // 忽略大小写
+      // 获取匹配内容
+      const res = item.match(reg)
+      // match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配
+      // console.log(res)   res[0] 匹配到的内容
+      return item.replace(res, `<span style="color:red;">${res[0]}</span>`)
     }
   },
   watch: {

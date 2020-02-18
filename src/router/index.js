@@ -19,7 +19,12 @@ const routes = [
   { path: '/user/chat', component: () => import('@/views/user/chat.vue') }, // 一级路由 小智同学组件
   { path: '/login', name: 'login', component: () => import('@/views/user/login.vue') }, // 一级路由 登录组件
   { path: '/search', component: () => import('@/views/search/index.vue') }, // 一级路由 搜索中心组件
-  { path: '/search/result', component: () => import('@/views/search/result.vue') }, // 一级路由 搜索结果组件
+  // :q 文章搜索单击时传递的参数
+  {
+    path: '/search/result/:q',
+    name: 'result',
+    component: () => import('@/views/search/result.vue')
+  }, // 一级路由 搜索结果组件
   { path: '/article', component: () => import('@/views/article/index.vue') } // 一级路由 文章详情组件
 ]
 
