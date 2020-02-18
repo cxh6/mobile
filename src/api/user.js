@@ -2,6 +2,28 @@
 import request from '@/utils/request.js'
 
 // 创建各个api方法
+
+// 关注作者
+// target 被关注作者的id
+export function apiUserFollow (target) {
+  return request({
+    url: '/app/v1_0/user/followings',
+    method: 'post',
+    data: {
+      target // 简易成员赋值
+    }
+  })
+}
+
+// 取消关注
+// target 被关注作者的id
+export function apiUserUnFollow (target) {
+  return request({
+    url: '/app/v1_0/user/followings/' + target,
+    method: 'delete'
+  })
+}
+
 /**
  * 对登录账户信息进行校验，是一个es6按需导出动作
  * 接口：【用户认证（登录注册）】

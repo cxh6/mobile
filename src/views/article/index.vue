@@ -15,7 +15,13 @@
           <!-- 使用过滤器 formatTime -->
           <p class="time">{{article.pubdate | formatTime}}</p>
         </div>
-        <van-button round size="small" :type="article.is_followed?'default':'info'">{{article.is_followed?'取消关注':'+ 关注'}}</van-button>
+        <van-button
+          round
+          size="small"
+          :type="article.is_followed?'default':'info'"
+          @click="followMe()"
+          :loading="isLoading"
+        >{{article.is_followed?'取消关注':'+ 关注'}}</van-button>
       </div>
       <!-- 文章内容 -->
       <div class="content">
@@ -33,7 +39,13 @@
           icon="like-o"
           style="margin-right:8px;"
         >点赞</van-button>
-        <van-button round size="small" plain icon="delete" :class="{active:article.attitude===0}">不喜欢</van-button>
+        <van-button
+          round
+          size="small"
+          plain
+          icon="delete"
+          :class="{active:article.attitude===0}"
+        >不喜欢</van-button>
       </div>
     </div>
   </div>
@@ -42,11 +54,12 @@
 <script>
 // 导入api
 import { apiArticleDetail } from '@/api/article.js' // 获取指定文章详情api接口
+import { apiUserFollow, apiUserUnFollow } from '@/api/user.js' // 关注/取消关注作者
 export default {
-  name: 'article',
+  name: 'article-index',
   data () {
     return {
-      // is_followed: false, // 是否关注了作者
+      isLoading: false, // 控制按钮是否为加载状态
       article: {} // 文章详情
     }
   },
@@ -60,6 +73,32 @@ export default {
     this.getArticleById() // 获取指定文章
   },
   methods: {
+    // 关注/取消关注 操作
+    async followMe () {
+      // 点击按钮之后，按钮变为 加载 状态
+      this.isLoading = true
+      // 点击按钮之后，延迟0.8s再 切换
+      this.$sleep(800)
+
+      // 判断当前状态，做不同处理操作
+      if (this.article.is_followed) {
+        // 取消关注 操作
+        await apiUserUnFollow(this.article.aut_id)
+        // 同步更新
+        this.article.is_followed = false
+      } else {
+        // 关注 操作,成功 / 失败
+        try {
+          await apiUserFollow(this.article.aut_id)
+          // 同步更新
+          this.article.is_followed = true
+        } catch (err) {
+          this.$toast.fail('不能自己关注自己！')
+        }
+      }
+      // 切换完之后，按钮恢复状态
+      this.isLoading = false
+    },
     // 获取指定文章详情
     async getArticleById () {
       const res = await apiArticleDetail(this.aid)
