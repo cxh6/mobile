@@ -5,8 +5,32 @@
 </template>
 
 <script>
+// 导入api
+import { apiArticleDetail } from '@/api/article.js' // 获取指定文章详情api接口
 export default {
-  name: 'article'
+  name: 'article',
+  data () {
+    return {
+      article: {} // 文章详情
+    }
+  },
+  computed: {
+    aid () {
+      // 获取指定文章id
+      return this.$route.params.aid
+    }
+  },
+  created () {
+    this.getArticleById() // 获取指定文章
+  },
+  methods: {
+    // 获取指定文章详情
+    async getArticleById () {
+      const res = await apiArticleDetail(this.aid)
+      // console.log(res)
+      this.article = res
+    }
+  }
 }
 </script>
 

@@ -2,6 +2,14 @@
 import request from '@/utils/request.js'
 
 // 创建各个api方法
+// 获取指定文章详情
+export function apiArticleDetail (articleID) {
+  return request({
+    url: '/app/v1_0/articles/' + articleID,
+    method: 'get'
+  })
+}
+
 /**
  * 对文章做举报处理
  * @param {文章id} articleID

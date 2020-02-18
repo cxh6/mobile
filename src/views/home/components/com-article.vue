@@ -11,7 +11,7 @@
       v-model="isLoading"
       @refresh="onRefresh"
       :success-text="downSuccessText"
-      :success-duration="1000"
+      success-duration="1000"
     >
       <!-- A: van-list --- 上拉动作（瀑布流效果） -->
       <!--
@@ -32,7 +32,8 @@
          title：单元格标题
          <template slot="label">：通过作用域插槽体现单元格的‘label描述信息’  slot="label/title/"
         -->
-        <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title">
+        <!-- <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title"> -->
+        <van-cell v-for="item in articleList" :key="item.art_id.toString()" @click="$router.push({name:'article',params:{aid:item.art_id.toString()}})" :title="item.title">
           <!-- 通过作用域插槽体现单元格的‘label描述信息’ -->
           <template slot="label">
             <!-- van-grid 宫格 -->
@@ -56,10 +57,14 @@
             </van-grid>
             <p>
               <!-- van-icon 文章右侧小叉号按钮，点击按钮 传递不感兴趣文章的id -->
+              <!--
+                事件冒泡
+                阻止事件冒泡 click.stop
+               -->
               <van-icon
                 name="close"
                 style="float:right;"
-                @click="displayDialog(item.art_id.toString())"
+                @click.stop="displayDialog(item.art_id.toString())"
               />
               <span>作者:{{item.aut_name}}</span>
               &nbsp;

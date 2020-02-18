@@ -25,7 +25,8 @@ const routes = [
     name: 'result',
     component: () => import('@/views/search/result.vue')
   }, // 一级路由 搜索结果组件
-  { path: '/article', component: () => import('@/views/article/index.vue') } // 一级路由 文章详情组件
+  // :aid 传递id
+  { path: '/article/:aid', name: 'article', component: () => import('@/views/article/index.vue') } // 一级路由 文章详情组件
 ]
 
 const router = new VueRouter({
