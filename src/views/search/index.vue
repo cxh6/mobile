@@ -1,10 +1,12 @@
 <template>
   <div class="container">
     <van-nav-bar title="搜索中心" left-arrow @click-left="$router.back()" />
-    <van-search v-model.trim="searchText" placeholder="请输入搜索关键词" />
+    <!-- @search="onSearch()"：按下回车执行的事件 -->
+    <van-search v-model.trim="searchText" placeholder="请输入搜索关键词" @search="onSearch(searchText)" />
     <van-cell-group>
       <!-- <van-cell v-for="(item,k) in suggestionList" :key="k" :title="item" icon="search" /> -->
-      <van-cell v-for="(item,k) in suggestionList" :key="k" icon="search" >
+      <!-- @click='onSearch()'  点击，执行onSearch事件 -->
+      <van-cell v-for="(item,k) in suggestionList" :key="k" icon="search" @click='onSearch(item)'>
         <!-- slot="title"使用命名插槽 覆盖 title内容 -->
         <span slot="title" v-html="highlightCell(item,searchText)"></span>
       </van-cell>
@@ -24,6 +26,11 @@ export default {
     }
   },
   methods: {
+    // 搜索结果处理
+    onSearch (keywords) {
+      // 跳转页面
+      this.$router.push({ name: 'result', params: { q: keywords } })
+    },
     // 关键词高亮设置
     highlightCell (item, keywords) {
       // 正则
