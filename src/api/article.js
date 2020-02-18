@@ -2,6 +2,45 @@
 import request from '@/utils/request.js'
 
 // 创建各个api方法
+
+// 对文章不喜欢
+export function apiArticleDisliking (target) {
+  return request({
+    url: '/app/v1_0/article/dislikes',
+    method: 'post',
+    data: {
+      target
+    }
+  })
+}
+
+// 取消对文章不喜欢
+export function apiArticleUnDisliking (target) {
+  return request({
+    url: '/app/v1_0/article/dislikes/' + target,
+    method: 'delete'
+  })
+}
+
+// 对文章点赞
+export function apiArticleLiking (target) {
+  return request({
+    url: '/app/v1_0/article/likings',
+    method: 'post',
+    data: {
+      target
+    }
+  })
+}
+
+// 取消对文章点赞
+export function apiArticleUnLiking (target) {
+  return request({
+    url: '/app/v1_0/article/likings/' + target,
+    method: 'delete'
+  })
+}
+
 // 获取指定文章详情
 export function apiArticleDetail (articleID) {
   return request({

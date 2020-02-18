@@ -31,6 +31,7 @@
       <!-- 点赞/不喜欢 -->
       <div class="zan">
         <!-- plain：将按钮设置为朴素按钮，朴素按钮的文字为按钮颜色，背景为白色 -->
+        <!-- @click="articleLiking()" 对文章 点赞 / 取消对文章点赞 事件 -->
         <van-button
           round
           size="small"
@@ -38,12 +39,17 @@
           plain
           icon="like-o"
           style="margin-right:8px;"
+          :loading="isLoadinglike"
+          @click="articleLiking()"
         >点赞</van-button>
+        <!-- @click="articleDislike()" 对文章 不喜欢/取消不喜欢 事件 -->
         <van-button
           round
           size="small"
           plain
           icon="delete"
+          :loading="isLoadingDislike"
+          @click="articleDislike()"
           :class="{active:article.attitude===0}"
         >不喜欢</van-button>
       </div>
@@ -53,13 +59,21 @@
 
 <script>
 // 导入api
-import { apiArticleDetail } from '@/api/article.js' // 获取指定文章详情api接口
+import {
+  apiArticleDetail,
+  apiArticleLiking,
+  apiArticleUnLiking,
+  apiArticleDisliking,
+  apiArticleUnDisliking
+} from '@/api/article.js' // 获取指定文章详情  对文章点赞 取消对文章点赞 不喜欢 取消不喜欢 api接口
 import { apiUserFollow, apiUserUnFollow } from '@/api/user.js' // 关注/取消关注作者
 export default {
   name: 'article-index',
   data () {
     return {
-      isLoading: false, // 控制按钮是否为加载状态
+      isLoadinglike: false, // 点击 点赞时 控制按钮是否为加载状态
+      isLoadingDislike: false, // 点击不喜欢时 控制按钮是否为加载状态
+      isLoading: false, // 点击关注时 控制按钮是否为加载状态
       article: {} // 文章详情
     }
   },
@@ -73,6 +87,50 @@ export default {
     this.getArticleById() // 获取指定文章
   },
   methods: {
+    // 对文章 不喜欢/取消不喜欢 操作
+    async articleDislike () {
+      // 点击按钮之后，按钮变为 加载 状态
+      this.isLoadingDislike = true
+      // 点击按钮之后，延迟0.8s再 切换
+      this.$sleep(800)
+
+      // 判断当前状态
+      if (this.article.attitude === 0) {
+        // 执行 取消 不喜欢
+        await apiArticleUnDisliking(this.aid)
+        // 同步更新
+        this.article.attitude = -1
+      } else {
+        // 执行 不喜欢
+        await apiArticleDisliking(this.aid)
+        // 同步更新
+        this.article.attitude = 0
+      }
+      // 切换完之后，按钮恢复状态
+      this.isLoadingDislike = false
+    },
+    // 对文章点赞操作
+    async articleLiking () {
+      // 点击按钮之后，按钮变为 加载 状态
+      this.isLoadinglike = true
+      // 点击按钮之后，延迟0.8s再 切换
+      this.$sleep(800)
+
+      // 判断当前状态
+      if (this.article.attitude === 1) {
+        // 如果当前的状态为 红色 1，执行 无状态 操作
+        await apiArticleUnLiking(this.aid)
+        // 同步更新
+        this.article.attitude = -1
+      } else {
+        // 当前状态为 无状态 -1 ，执行 点赞 操作
+        await apiArticleLiking(this.aid)
+        // 同步更新
+        this.article.attitude = 1
+      }
+      // 切换完之后，按钮恢复状态
+      this.isLoadinglike = false
+    },
     // 关注/取消关注 操作
     async followMe () {
       // 点击按钮之后，按钮变为 加载 状态
