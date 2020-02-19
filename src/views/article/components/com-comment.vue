@@ -65,10 +65,10 @@
     </van-popup>
     <!-- 添加评论或回复的小构件 -->
     <div class="reply-container van-hairline--top">
-      <van-field v-model="contentCorR" placeholder="写评论或回复...">
+      <van-field v-model.trim="contentCorR" :placeholder="showReply?'写回复...':'写评论...'">
         <!-- van-loading设置加载图标，与提交进行配置使用 -->
         <van-loading v-if="submitting" slot="button" type="spinner" size="16px"></van-loading>
-        <span class="submit" v-else slot="button">提交</span>
+        <span class="submit" v-else slot="button" @click="add()">提交</span>
       </van-field>
     </div>
   </div>
@@ -76,7 +76,7 @@
 
 <script>
 // 导入api
-import { apiReplyList } from '@/api/reply.js' // 指定评论的所有回复信息
+import { apiReplyList, apiAddCorR } from '@/api/reply.js' // 指定评论的所有回复信息  添加评论或回复
 import { apiCommentList } from '@/api/comment.js' // 指定文章的所有的评论信息
 export default {
   name: 'com-comment',
@@ -112,6 +112,39 @@ export default {
     }
   },
   methods: {
+    // 添加评论或回复
+    async add () {
+      // 判断是否有输入内容
+      if (!this.contentCorR) {
+        return false
+      }
+      // 有输入内容
+      this.submitting = true // 开启提交中
+      await this.$sleep(800) // 开启延迟器
+
+      // 判断 回复 弹出层是否显示
+      if (this.showReply) {
+        // 弹出层开启
+        // 执行 回复 操作
+        const res = await apiAddCorR({ target: this.nowComID, content: this.contentCorR, art_id: this.aid })
+        // console.log(res)
+        // 在回复列表顶部追加， 回复信息 新回复信息置顶显示
+        this.replyList.unshift(res.new_obj)
+        // 找到当前回复的评论，总数量+1
+        const comment = this.commentList.find(item => item.com_id.toString() === this.nowComID)
+        comment.reply_count++
+      } else {
+        // 弹出层没有开启
+        // 执行评论 操作
+        const res = await apiAddCorR({ target: this.aid, content: this.contentCorR })
+        // 追加 置顶
+        this.commentList.unshift(res.new_obj)
+      }
+      // 输入框清空
+      this.contentCorR = ''
+      // 结束提交中
+      this.submitting = false
+    },
     // 点击回复按钮进行的操作
     openReply (comID) {
       this.showReply = true // 显示弹出层
