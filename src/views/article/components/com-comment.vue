@@ -28,7 +28,9 @@
             <!-- 时间过滤器 -->
             <span>{{item.pubdate|formatTime}}</span>
             ·
-            <span @click="showReply=true">{{item.reply_count}}&nbsp;回复</span>
+            <span
+              @click="openReply(item.com_id.toString())"
+            >{{item.reply_count}}&nbsp;回复</span>
           </p>
         </div>
       </van-cell>
@@ -42,20 +44,20 @@
         finished-text="没有更多了"
         @load="onLoadReply"
       >
-        <van-cell v-for="item in reply.list" :key="item" :title="item">
+        <van-cell v-for="item in replyList" :key="item.com_id.toString()">
           <!-- 作者头像 -->
           <div slot="icon">
-            <img class="avatar" src="http://toutiao.meiduo.site/Fn6-mrb5zLTZIRG3yH3jG8HrURdU" alt />
+            <img class="avatar" :src="item.aut_photo" alt />
           </div>
           <!-- 作者名称 -->
           <div slot="title">
-            <span>度娘</span>
+            <span>{{item.aut_name}}</span>
           </div>
           <!-- 评论内容和时间 -->
           <div slot="label">
-            <p>好厉害呀</p>
+            <p v-html="item.content"></p>
             <p>
-              <span>2019-12-30 15:15:15</span>
+              <span>{{item.pubdate|formatTime}}</span>
             </p>
           </div>
         </van-cell>
@@ -66,12 +68,16 @@
 
 <script>
 // 导入api
+import { apiReplyList } from '@/api/reply.js' // 指定评论的所有回复信息
 import { apiCommentList } from '@/api/comment.js' // 指定文章的所有的评论信息
 export default {
-  name: 'ComComment',
+  name: 'com-comment',
   data () {
     return {
       // 回复相关
+      replyID: null, // 回复id
+      nowComID: null, // 当前被激活评论id
+      replyList: [], // 回复列表
       showReply: false, // 控制回复弹出层是否显示
       // 回复瀑布相关
       reply: {
@@ -95,24 +101,31 @@ export default {
     }
   },
   methods: {
+    // 点击回复按钮进行的操作
+    openReply (comID) {
+      this.showReply = true // 显示弹出层
+      this.nowComID = comID // 设置激活评论
+      // 恢复设置
+      this.replyList = [] // 清空恢复列表
+      this.reply.finished = false // 重置瀑布状态
+      this.replyID = null // 重置分页标志
+    },
     // 回复瀑布流
-    // 回复瀑布加载
-    onLoadReply () {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.reply.list.push(this.reply.list.length + 1)
-        }
-
-        // 加载状态结束
-        this.reply.loading = false
-
-        // 数据全部加载完成
-        if (this.reply.list.length >= 40) {
-          this.reply.finished = true
-        }
-      }, 1000)
+    async onLoadReply () {
+      // 延迟器
+      await this.$sleep(800)
+      const res = await apiReplyList({ commentID: this.nowComID, replyID: this.replyID })
+      // console.log(res)
+      // 加载动画消失
+      this.reply.loading = false
+      // 数据加载完成
+      if (res.results.length === 0) {
+        this.reply.finished = true
+        return false
+      }
+      this.replyList.push(...res.results)
+      // 接收relyID
+      this.replyID = res.last_id
     },
     // 评论瀑布流
     async onLoad () {
@@ -123,7 +136,7 @@ export default {
         articleID: this.aid,
         commentID: this.commentID
       })
-      //   console.log(res)
+      // console.log(res)
       //   this.commentList = res.results
       // 加载动画消失
       this.loading = false
