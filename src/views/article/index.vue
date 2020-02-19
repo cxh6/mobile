@@ -53,11 +53,15 @@
           :class="{active:article.attitude===0}"
         >不喜欢</van-button>
       </div>
+      <!-- 评论列表 -->
+      <com-comment></com-comment>
     </div>
   </div>
 </template>
 
 <script>
+// 导入组件
+import ComComment from './components/com-comment.vue'
 // 导入api
 import {
   apiArticleDetail,
@@ -69,6 +73,7 @@ import {
 import { apiUserFollow, apiUserUnFollow } from '@/api/user.js' // 关注/取消关注作者
 export default {
   name: 'article-index',
+  components: { ComComment },
   data () {
     return {
       isLoadinglike: false, // 点击 点赞时 控制按钮是否为加载状态
