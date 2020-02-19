@@ -63,6 +63,14 @@
         </van-cell>
       </van-list>
     </van-popup>
+    <!-- 添加评论或回复的小构件 -->
+    <div class="reply-container van-hairline--top">
+      <van-field v-model="contentCorR" placeholder="写评论或回复...">
+        <!-- van-loading设置加载图标，与提交进行配置使用 -->
+        <van-loading v-if="submitting" slot="button" type="spinner" size="16px"></van-loading>
+        <span class="submit" v-else slot="button">提交</span>
+      </van-field>
+    </div>
   </div>
 </template>
 
@@ -74,6 +82,9 @@ export default {
   name: 'com-comment',
   data () {
     return {
+      // 添加评论或回复成员
+      contentCorR: '', // 内容
+      submitting: false, // 是否正在提交
       // 回复相关
       replyID: null, // 回复id
       nowComID: null, // 当前被激活评论id
@@ -114,7 +125,10 @@ export default {
     async onLoadReply () {
       // 延迟器
       await this.$sleep(800)
-      const res = await apiReplyList({ commentID: this.nowComID, replyID: this.replyID })
+      const res = await apiReplyList({
+        commentID: this.nowComID,
+        replyID: this.replyID
+      })
       // console.log(res)
       // 加载动画消失
       this.reply.loading = false
@@ -167,6 +181,20 @@ export default {
   /deep/ .van-cell__title {
     .van-cell__label {
       width: 400px;
+    }
+  }
+  // 添加评论或回复构件
+  .reply-container {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 88px;
+    width: 100%;
+    background: #f5f5f5;
+    z-index: 9999;
+    .submit {
+      font-size: 24px;
+      color: #3296fa;
     }
   }
 }
