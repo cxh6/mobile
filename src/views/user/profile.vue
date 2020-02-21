@@ -42,7 +42,9 @@
       <!-- 内容 -->
       <!-- 1 本地相册选择图片 -->
       <!-- 2 拍照 -->
-      <van-cell is-link title="本地相册选择图片"></van-cell>
+      <!-- <van-cell is-link title="本地相册选择图片" @click="readyUpload()"></van-cell> -->
+      <!-- 单击后要触发上传图片表单域的click事件执行，就是要展开选取图片的框框 -->
+      <van-cell is-link title="本地相册选择图片" @click="$refs.mypic.click()"></van-cell>
       <van-cell is-link title="拍照"></van-cell>
     </van-popup>
     <!-- 弹昵称 -->
@@ -75,13 +77,16 @@
         @confirm="confirmDate"
       ></van-datetime-picker>
     </van-popup>
+    <!-- 头像表单域 -->
+    <!-- ref="mypic"  this.$refs.mypic 获得上传文件的DOM对象 -->
+    <input ref="mypic" type="file" name="" style="display:none" @change="startUpload()" >
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
-// 导入获得用户个人资料api
-import { apiUserProfile } from '@/api/user.js'
+// 导入api
+import { apiUserProfile, apiUserPhoto } from '@/api/user.js'
 export default {
   name: 'user-profile',
   data () {
@@ -107,6 +112,22 @@ export default {
     this.getUserProfile()
   },
   methods: {
+    // 选择好图片之后的处理
+    async startUpload () {
+      // console.dir(this.$refs.mypic)
+      // this.$refs.mypic.files[0] // 获得上传文件数据
+      const fd = new FormData() // 创建FormDdta对象
+      fd.append('photo', this.$refs.mypic.files[0]) // 选中的图片添加到fd中
+      const res = await apiUserPhoto(fd)
+      // console.log(res) // {id: BigNumber, photo: "http://toutiao.meiduo.site/Fu6vDv9KKQphTKmKFwy-Mcf5JhuO"}
+      this.userProfile.photo = res.photo // 同步更新
+      this.showPhoto = false // 关闭
+    },
+    // // 上传附件表单域即将被触发
+    // readyUpload () {
+    //   // 使得type="file"的表单标签执行单击事件，即将弹出选取图片的对话框
+    //   this.$refs.mypic.click()
+    // },
     // 弹生日，点击确认执行的回调处理
     confirmDate (val) {
       // console.log(val) // Sun Jun 21 2020 00:00:00 GMT+0800 (中国标准时间)
