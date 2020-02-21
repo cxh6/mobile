@@ -105,12 +105,17 @@ export default {
       const res = item.match(reg)
       // match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配
       // console.log(res)   res[0] 匹配到的内容
-      return item.replace(res, `<span style="color:red;">${res[0]}</span>`)
+      try {
+        return item.replace(res, `<span style="color:red;">${res[0]}</span>`)
+      } catch {
+        return item
+      }
     }
   },
   watch: {
     // 对 搜索关键词进行监听
     searchText (newV, oldV) {
+      clearTimeout(this.timer) // 为了清空删除的最后一个定时器，不留残余
       // 判断搜索框是否有变化
       if (!newV) {
         this.suggestionList = [] // 没有关键字内容
@@ -120,7 +125,6 @@ export default {
       // 设置防抖，防止频繁发送请求
       // timer是组件data成员，就是临时的，不用在data中事先声明
       // 清除
-      clearTimeout(this.timer)
       this.timer = setTimeout(async () => {
         const res = await apiSuggestionList({ q: newV })
         // console.log(res)
