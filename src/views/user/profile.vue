@@ -14,7 +14,7 @@
       @click-left="$router.back()"
       title="编辑资料"
       right-text="保存"
-      @click-right="save()"
+      @click-right="saveProfile()"
     ></van-nav-bar>
     <van-cell-group>
       <van-cell is-link title="头像" center @click="showPhoto=true">
@@ -79,14 +79,14 @@
     </van-popup>
     <!-- 头像表单域 -->
     <!-- ref="mypic"  this.$refs.mypic 获得上传文件的DOM对象 -->
-    <input ref="mypic" type="file" name="" style="display:none" @change="startUpload()" >
+    <input ref="mypic" type="file" name style="display:none" @change="startUpload()" />
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 // 导入api
-import { apiUserProfile, apiUserPhoto } from '@/api/user.js'
+import { apiUserProfile, apiUserPhoto, apiSaveProfile } from '@/api/user.js'
 export default {
   name: 'user-profile',
   data () {
@@ -154,9 +154,10 @@ export default {
       // 这里需要将 字符串---> 对象 格式
       this.nowDate = new Date(this.userProfile.birthday)
     },
-    save () {
-      // 提示信息
-      this.$toast.success('保存成功')
+    // 更新用户资料
+    async saveProfile () {
+      await apiSaveProfile(this.userProfile)
+      this.$toast.success('更新用户资料成功')
     }
   }
 }

@@ -4,6 +4,24 @@ import request from '@/utils/request.js'
 // 创建各个api方法
 
 /**
+ * 更新用户资料
+ * @param {用户昵称} name
+ * @param {用户性别} gender
+ * @param {生日} birthday
+ */
+export function apiSaveProfile ({ name, gender, birthday }) {
+  return request({
+    url: '/app/v1_0/user/profile', // 编辑资料的地址
+    method: 'patch',
+    data: {
+      name,
+      gender,
+      birthday
+    }
+  })
+}
+
+/**
  * 上传用户头像
  * @param {FormData对象，拥有photo成员，代表被上传头像的文件对象} fdObj
  * FormData是h5发布的技术，可以实现普通表单域信息 和 上传文件域信息的收集工作
