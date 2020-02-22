@@ -81,7 +81,7 @@ export default {
       // 具体是服务器端通过emit()调用如下事件的
       this.socket.on('connect', () => {
         // 客户端与服务器连接成功后会自动调用该事件
-        console.log('连接成功')
+        // console.log('连接成功')
         // 小智先发言，暖下场
         this.talks.push({
           msg: '干啥呢outman，咋这长时间不联系了？',

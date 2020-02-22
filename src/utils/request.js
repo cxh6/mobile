@@ -48,27 +48,53 @@ instance.interceptors.request.use(function (config) {
 }, function (error) {
   return Promise.reject(error) // 直接返回promise错误
 })
-// -------响应拦截器
-// token时效为2小时
+// ---------响应拦截器
 instance.interceptors.response.use(function (response) {
-  // 响应的相关逻辑
-  // 相应数据，对返回的数据进行处理data或者data.data
+  //  得到的response实际上被axios包 一层数据
   try {
+    //  将数据解构
     return response.data.data
   } catch (error) {
     return response.data
   }
-}, function (error) {
-  // 处理服务器端token过期操作
-  // 非正常响应相关逻辑(包括401)
-  // console.dir(error)
-  // 判断当前错误是不是401
+}, async function (error) {
+  // 响应有错误，有可能错误状态码为401
   if (error.response.status === 401) {
-    // if (error.response.status === 401 && confirm('该账号已过期，请重新登录')) {
-    // 强制用户重新登陆，从而重新刷新token
-    router.push('/login')
-    // 不要做错误提示
-    return new Promise(function () { }) // 空的promise对象，不执行catch，从而不做错误提示
+    // 如果refresh_token不存在
+    if (!store.state.user.refresh_token) {
+      router.push('/login')
+      return Promise.reject(error)
+    }
+
+    try {
+      // 刷新用户token
+      // 应该发送一个请求 换取新的token
+      // 这里不应该再用instance  因为 instance会再次进入拦截器  用默认的axios
+      const result = await axios({
+        method: 'put',
+        url: 'http://ttapi.research.itcast.cn/app/v1_0/authorizations',
+        headers: {
+          Authorization: `Bearer ${store.state.user.refresh_token}`
+        }
+      })
+      // 获取到新token后，就对vuex和localStorage进行更新
+      // 注意：axios通过refresh_token向服务器端发送请求，返回的数据信息中只有token，
+      //      没有refresh_token
+      store.commit('updateUser', {
+        token: result.data.data.token, // 拿到新的token之后
+        refresh_token: store.state.user.refresh_token // 将之前 refresh_token 获取使用
+      })
+      // error.config对象中存有之前失败请求的所有参数信息
+      // 例如url、method、data等等
+      // console.dir(error)
+      return instance(error.config) // 把刚才错误的请求再次发送出去 然后将promise返回
+    } catch (err) {
+      // 如果错误 表示补救措施也没用了(有可能refresh_token也失效了)
+      // 应该跳转到登录页 并且 把废掉的用户信息全都干掉
+      store.commit('clearUser') // 所有的用户信息清空
+      router.push('/login') // 跳转到回登录页
+      return Promise.reject(err)
+    }
   }
   return Promise.reject(error)
 })

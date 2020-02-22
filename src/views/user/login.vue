@@ -84,8 +84,8 @@ export default {
     return {
       isLogin: false, // 按钮处于正常状态
       loginForm: {
-        mobile: '13911111111', // 手机号
-        code: '246810' // 验证码
+        mobile: '', // 手机号
+        code: '' // 验证码
       }
     }
   },

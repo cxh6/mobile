@@ -17,8 +17,11 @@
     />
     <!-- 中间内容区域 -->
     <div class="my-wrapper" :class="{noTop:!showNavBar}">
-      <!-- 占位符 -->
-      <router-view></router-view>
+      <!-- 给二级路由 配置缓存 -->
+      <keep-alive>
+        <!-- 占位符 -->
+        <router-view></router-view>
+      </keep-alive>
     </div>
     <!-- 标签栏 -->
     <!--

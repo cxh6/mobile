@@ -1,5 +1,6 @@
 <template>
-  <div class="scroll-wrapper">
+  <!-- @scroll="remember()"设置事件 记录滚动条滚动的位置 -->
+  <div class="scroll-wrapper" @scroll="remember()" ref="myarticle">
     <!-- B: van-pull-refresh 下拉刷新 -->
     <!--
           v-model="isLoading"：设置下拉效果是否结束，false加载完成，动画消失
@@ -33,7 +34,12 @@
          <template slot="label">：通过作用域插槽体现单元格的‘label描述信息’  slot="label/title/"
         -->
         <!-- <van-cell v-for="item in articleList" :key="item.art_id.toString()" :title="item.title"> -->
-        <van-cell v-for="item in articleList" :key="item.art_id.toString()" @click="$router.push({name:'article',params:{aid:item.art_id.toString()}})" :title="item.title">
+        <van-cell
+          v-for="item in articleList"
+          :key="item.art_id.toString()"
+          @click="$router.push({name:'article',params:{aid:item.art_id.toString()}})"
+          :title="item.title"
+        >
           <!-- 通过作用域插槽体现单元格的‘label描述信息’ -->
           <template slot="label">
             <!-- van-grid 宫格 -->
@@ -60,7 +66,7 @@
               <!--
                 事件冒泡
                 阻止事件冒泡 click.stop
-               -->
+              -->
               <van-icon
                 name="close"
                 style="float:right;"
@@ -108,6 +114,7 @@ export default {
   },
   data () {
     return {
+      qianTop: 0, // 滚动条记录离开的位置
       // 下拉动作完成的文字提示
       downSuccessText: '', // 文章更新成功 / 文章已经是最新的
       nowArticleID: '', // 不感兴趣文章id
@@ -126,7 +133,20 @@ export default {
     // 文章列表
     this.getArticleList()
   },
+  // keep-alive组件激活后 调用的方法
+  activated () {
+    // 判断qianTop有没有变化
+    if (this.qianTop) {
+      // 滚动条位置恢复操作
+      this.$refs.myarticle.scrollTop = this.qianTop
+    }
+  },
   methods: {
+    // 记录滚动条的滚动的位置
+    // 滚动条随时滚动，remember随时调用
+    remember () {
+      this.qianTop = this.$refs.myarticle.scrollTop
+    },
     // 删除不感兴趣的目标文章
     handleDislikeSuccess () {
       // 获取不感兴趣文章的下标

@@ -24,6 +24,18 @@ export default new Vuex.Store({
       // localStorage持久清除
       localStorage.removeItem(USER_KEY)
     }
+    // // 单纯清除token
+    // clearToken: function (state) {
+    //   // 获取token和refresh_token信息
+    //   const tokenInfo = JSON.parse(window.localStorage.getItem(USER_KEY))
+    //   const tmp = {}
+    //   // 摘取处refresh_token
+    //   tmp.refresh_token = tokenInfo.refresh_token
+    //   // 清除vuex中token数据(保留refresh_token)
+    //   delete state.user.token
+    //   // 清除localStorage中token数据(保留refresh_token)
+    //   window.localStorage.setItem(USER_KEY, JSON.stringify(tmp))
+    // }
   },
   actions: {
   },
