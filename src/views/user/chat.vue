@@ -4,12 +4,12 @@
     <van-nav-bar fixed left-arrow @click-left="$router.back()" title="小智同学"></van-nav-bar>
     <div class="chat-list">
       <div class="chat-item left">
-        <van-image fit="cover" round src="https://img.yzcdn.cn/vant/cat.jpeg" />
+        <van-image fit="cover" round :src="XZImg" />
         <div class="chat-pao">干啥呢，河蟹</div>
       </div>
       <div class="chat-item right">
         <div class="chat-pao">没看正忙，挖沙呢</div>
-        <van-image fit="cover" round src="https://img.yzcdn.cn/vant/cat.jpeg" />
+        <van-image fit="cover" round :src="userInfo.photo" />
       </div>
     </div>
     <div class="reply-container van-hairline--top">
@@ -22,15 +22,29 @@
 </template>
 
 <script>
+import { apiUserInfo } from '@/api/user.js' // 获取用户自己信息
+// 小智头像
+import XZImg from '@/assets/img/xz.png'
 export default {
   name: 'user-chat',
   data () {
     return {
+      userInfo: {}, // 用户自己信息
+      XZImg, // 小智头像 简易成员赋值
       content: '', // 即将发表的聊天内容
       loading: false // 是否正在提交留言
     }
   },
+  created () {
+    this.getUserInfo() // 获取用户自己信息
+  },
   methods: {
+    // 获取用户自己信息
+    async getUserInfo () {
+      const res = await apiUserInfo()
+      // console.log(res)
+      this.userInfo = res
+    },
     send () {
 
     }
@@ -46,19 +60,19 @@ export default {
   left: 0;
   top: 0;
   box-sizing: border-box;
-  background:#fafafa;
+  background: #fafafa;
   padding: 92px 0 100px 0;
   .chat-list {
     height: 100%;
     overflow-y: scroll;
-    .chat-item{
+    .chat-item {
       padding: 20px;
-      .van-image{
+      .van-image {
         vertical-align: top;
         width: 80px;
         height: 80px;
       }
-      .chat-pao{
+      .chat-pao {
         vertical-align: top;
         display: inline-block;
         min-width: 80px;
@@ -73,38 +87,38 @@ export default {
         word-break: break-all;
         font-size: 28px;
         color: #333;
-        &::before{
+        &::before {
           content: "";
           width: 20px;
           height: 20px;
           position: absolute;
           top: 24px;
-          border-top:1px solid #c2d9ea;
-          border-right:1px solid #c2d9ea;
+          border-top: 1px solid #c2d9ea;
+          border-right: 1px solid #c2d9ea;
           background: #e0effb;
         }
       }
     }
   }
 }
-.chat-item.right{
+.chat-item.right {
   text-align: right;
-  .chat-pao{
+  .chat-pao {
     margin-left: 0;
     margin-right: 30px;
-    &::before{
+    &::before {
       right: -12px;
       transform: rotate(45deg);
     }
   }
 }
-.chat-item.left{
+.chat-item.left {
   text-align: left;
-  .chat-pao{
+  .chat-pao {
     margin-left: 30px;
     margin-right: 0;
     // 伪类选择器
-    &::before{
+    &::before {
       left: -10px;
       transform: rotate(-135deg);
     }
